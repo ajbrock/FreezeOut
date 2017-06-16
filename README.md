@@ -44,3 +44,4 @@ There's (at least) one typo in the paper where it defines the learning rate sche
 - DenseNet code stolen in a daring midnight heist from Brandon Amos: https://github.com/bamos/densenet.pytorch
 - Training and Progress code acquired in a drunken game of SpearPong with Jan Schlüter: https://github.com/Lasagne/Recipes/tree/master/papers/densenet
 - Metrics Logging code extracted from ancient diary of Daniel Maturana: https://github.com/dimatura/voxnet
+- WideResNet code summoned using an incantation from Xternalz: https://github.com/xternalz/WideResNet-pytorch
