@@ -62,6 +62,8 @@ class SingleLayer(nn.Module):
         self.conv1 = nn.Conv2d(nChannels, growthRate, kernel_size=3,
                                padding=1, bias=False)
         
+        # Current Layer Index
+        self.layer_index = layer_index
         # If the layer is being trained or not
         self.active = True
             

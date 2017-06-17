@@ -73,7 +73,10 @@ def opts_parser():
               +' cubic scaling then this is the uncubed value.'))
     parser.add_argument(
         '--scale_lr', type=bool, default=True,
-        help='Scale each layer''s start LR as a function of its ice value?')
+        help='Scale each layer''s start LR as a function of its t_0 value?')
+    parser.add_argument(
+        '--no_scale', action='store_false', dest='scale_lr',
+        help='Don''t scale each layer''s start LR as a function of its t_0 value')
     parser.add_argument(
         '--how_scale',type=str,default='cubic',
         help=('How to relatively scale the schedule of each subsequent layer.'
@@ -110,13 +113,19 @@ def train_test(depth, growth_rate, dropout, augment,
                t_0, seed, scale_lr, how_scale, which_dataset, 
                const_time, resume, model):
     
+    # Update save_weights:
+    if save_weights=='default_save':
+        save_weights = (model + '_k' + str(growth_rate) + 'L' + str(depth)
+                        + '_ice' + str(int(100*t_0)) + '_'+how_scale + str(scale_lr)
+                        + '_seed' + str(seed) + '_epochs' + str(epochs) 
+                        + 'C' + str(which_dataset))
     # Seed RNG
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     np.random.seed(seed)
     
     # Name of the file to which we're saving losses and errors.
-    metrics_fname = save_weights + '_log.jsonl'
+    metrics_fname = 'logs/'+save_weights + '_log.jsonl'
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s %(levelname)s| %(message)s')
     logging.info('Metrics will be saved to {}'.format(metrics_fname))
@@ -271,9 +280,10 @@ def main():
     # parse command line
     parser = opts_parser()
     args = parser.parse_args()
+    train_test(**vars(args))
 
     # run
-    train_test(**vars(args))
+    # train_test(**vars(args))
 
 
 if __name__ == '__main__':
