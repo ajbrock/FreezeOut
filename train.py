@@ -27,7 +27,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.autograd import Variable as V
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
@@ -174,22 +173,23 @@ def train_test(depth, growth_rate, dropout, augment,
     # y: target labels
     def train_fn(x, y):
         net.optim.zero_grad()
-        output = net(V(x.cuda()))
-        loss = F.nll_loss(output, V(y.cuda()))
+        output = net(x.cuda())
+        loss = F.nll_loss(output, y.cuda())
         loss.backward()
         net.optim.step()
-        return loss.data[0]
+        return loss.item()
 
     # Testing function, returns test loss and test error for a batch
     # x: input data
     # y: target labels
     def test_fn(x, y):
-        output = net(V(x.cuda(), volatile=True))
-        test_loss = F.nll_loss(output, V(y.cuda(), volatile=True)).data[0]
+        with torch.no_grad():
+            output = net(x.cuda())
+            test_loss = F.nll_loss(output, y.cuda()).item()
 
-        # Get the index of the max log-probability as the prediction.
-        pred = output.data.max(1)[1].cpu()
-        test_error = pred.ne(y).sum()
+            # Get the index of the max log-probability as the prediction.
+            pred = output.data.max(1)[1].cpu()
+            test_error = pred.ne(y).sum()
 
         return test_loss, test_error
 

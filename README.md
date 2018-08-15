@@ -16,7 +16,18 @@ The exact speedup you get depends on how much error you can tolerate--higher spe
 ## Installation
 To run this script, you will need [PyTorch](http://pytorch.org) and a CUDA-capable GPU. If you wish to run it on CPU, just remove all the .cuda() calls.
 
+Install ```path``` by 
+```sh
+pip install path.py
+```
+
 ## Running
+Create a folder named ```logs``` by 
+
+```sh
+mkdir logs
+```
+
 To run with default parameters, simply call
 
 ```sh
